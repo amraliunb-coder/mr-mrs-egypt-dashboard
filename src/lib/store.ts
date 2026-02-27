@@ -14,8 +14,22 @@ export function computeTourFields(tour: Tour): TourWithComputed {
     const retailRemaining = Math.max(0, tour.retailPrice - tour.retailPaid);
     const profit = tour.retailPrice - tour.costPrice;
     const marginPercent = tour.retailPrice > 0 ? (profit / tour.retailPrice) * 100 : 0;
-    return { ...tour, costRemaining, retailRemaining, profit, marginPercent };
+
+    let effectiveStatus = tour.status;
+    if (tour.status !== 'cancelled') {
+        const today = format(new Date(), 'yyyy-MM-dd');
+        if (tour.date === today) {
+            effectiveStatus = 'active' as any;
+        } else if (tour.date < today) {
+            effectiveStatus = 'completed';
+        } else {
+            effectiveStatus = 'upcoming';
+        }
+    }
+
+    return { ...tour, status: effectiveStatus, costRemaining, retailRemaining, profit, marginPercent };
 }
+
 
 // Auto-seed on first load
 function ensureSeeded() {
