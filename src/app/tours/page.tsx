@@ -6,12 +6,13 @@ import { Tour, TourWithComputed } from '@/lib/types';
 import TourForm from '@/components/tours/TourForm';
 import CsvUpload from '@/components/tours/CsvUpload';
 import { Plus, Upload, Download, Search, Trash2, Edit, Map, RefreshCw } from 'lucide-react';
-import { differenceInDays, parseISO } from 'date-fns';
+import { differenceInDays, parseISO, format } from 'date-fns';
 
 export default function ToursPage() {
     const [tours, setTours] = useState<TourWithComputed[]>([]);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
+    const [monthFilter, setMonthFilter] = useState<string>('all');
     const [showForm, setShowForm] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [editingTour, setEditingTour] = useState<TourWithComputed | null>(null);
@@ -20,11 +21,25 @@ export default function ToursPage() {
 
     useEffect(() => { refresh(); }, []);
 
+    const availableMonths = Array.from(new Set(tours.map(t => {
+        try { return format(parseISO(t.date), 'yyyy-MM'); } catch { return ''; }
+    }))).filter(Boolean).sort();
+
     const filtered = tours.filter(t => {
         const matchSearch = t.tourName.toLowerCase().includes(search.toLowerCase()) ||
             t.customerName.toLowerCase().includes(search.toLowerCase());
         const matchStatus = statusFilter === 'all' || t.status === statusFilter;
-        return matchSearch && matchStatus;
+
+        let matchMonth = true;
+        if (monthFilter !== 'all') {
+            try {
+                matchMonth = format(parseISO(t.date), 'yyyy-MM') === monthFilter;
+            } catch {
+                matchMonth = false;
+            }
+        }
+
+        return matchSearch && matchStatus && matchMonth;
     });
 
     const handleAddTour = (tour: Omit<Tour, 'id'>) => {
@@ -113,6 +128,19 @@ export default function ToursPage() {
                     <option value="arrived">Arrived</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
+                </select>
+                <select
+                    className="form-select"
+                    value={monthFilter}
+                    onChange={e => setMonthFilter(e.target.value)}
+                    style={{ minWidth: '160px' }}
+                >
+                    <option value="all">All Months</option>
+                    {availableMonths.map(m => (
+                        <option key={m} value={m}>
+                            {format(parseISO(m + '-01'), 'MMMM yyyy')}
+                        </option>
+                    ))}
                 </select>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                     {filtered.length} tour{filtered.length !== 1 ? 's' : ''}

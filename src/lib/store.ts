@@ -80,7 +80,7 @@ export function getTours(): TourWithComputed[] {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
         }
 
-        return migrated.map(computeTourFields).sort((a, b) => b.date.localeCompare(a.date));
+        return migrated.map(computeTourFields).sort((a, b) => a.date.localeCompare(b.date));
     } catch {
         return [];
     }
