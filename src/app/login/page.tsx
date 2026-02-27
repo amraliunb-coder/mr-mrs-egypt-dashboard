@@ -131,11 +131,12 @@ export default function LoginPage() {
                             justifyContent: 'center',
                             fontSize: '15px',
                             marginTop: '8px',
-                            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', // Netvoya inspired orange
-                            color: '#fff',
+                            background: 'var(--gold-gradient)',
+                            color: '#0D0D0D', // Dark text for contrast on gold
                             border: 'none',
                             borderRadius: '8px',
-                            boxShadow: '0 4px 14px rgba(234, 88, 12, 0.4)'
+                            fontWeight: 600,
+                            boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)'
                         }}
                     >
                         Sign In
