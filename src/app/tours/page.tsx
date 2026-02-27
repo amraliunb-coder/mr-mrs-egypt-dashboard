@@ -6,6 +6,7 @@ import { Tour, TourWithComputed } from '@/lib/types';
 import TourForm from '@/components/tours/TourForm';
 import CsvUpload from '@/components/tours/CsvUpload';
 import { Plus, Upload, Download, Search, Trash2, Edit, Map, RefreshCw } from 'lucide-react';
+import { differenceInDays, parseISO } from 'date-fns';
 
 export default function ToursPage() {
     const [tours, setTours] = useState<TourWithComputed[]>([]);
@@ -140,6 +141,7 @@ export default function ToursPage() {
                                     <th>Tour Name</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
+                                    <th>Duration</th>
                                     <th>Customer</th>
                                     <th>Cost</th>
                                     <th>Retail</th>
@@ -155,6 +157,7 @@ export default function ToursPage() {
                                         <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.tourName}</td>
                                         <td>{t.date}</td>
                                         <td>{t.endDate || t.date}</td>
+                                        <td>{differenceInDays(parseISO(t.endDate || t.date), parseISO(t.date)) + 1} Days</td>
                                         <td>{t.customerName}</td>
                                         <td>{fmt(t.costPrice)}</td>
                                         <td>{fmt(t.retailPrice)}</td>
