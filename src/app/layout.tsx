@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Sidebar from '@/components/layout/Sidebar';
+import { AuthProvider } from '@/lib/auth';
+import AuthGuard from '@/components/auth/AuthGuard';
+import LayoutWrapper from '@/components/layout/LayoutWrapper';
 
 export const metadata: Metadata = {
   title: 'Mr & Mrs Egypt — Tour Dashboard',
@@ -11,12 +13,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <div className="app-shell">
-          <Sidebar />
-          <main className="main-content">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <AuthGuard>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+          </AuthGuard>
+        </AuthProvider>
       </body>
     </html>
   );
