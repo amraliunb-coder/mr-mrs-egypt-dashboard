@@ -96,6 +96,8 @@ export default function CalendarPage() {
                                     <tr>
                                         <th>Tour Name</th>
                                         <th>Customer</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
                                         <th>Cost</th>
                                         <th>Retail</th>
                                         <th>Profit</th>
@@ -107,6 +109,8 @@ export default function CalendarPage() {
                                         <tr key={t.id}>
                                             <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.tourName}</td>
                                             <td>{t.customerName}</td>
+                                            <td>{t.date}</td>
+                                            <td>{t.endDate || t.date}</td>
                                             <td>{fmt(t.costPrice)}</td>
                                             <td>{fmt(t.retailPrice)}</td>
                                             <td className={t.profit >= 0 ? 'text-green' : 'text-red'}>{fmt(t.profit)}</td>

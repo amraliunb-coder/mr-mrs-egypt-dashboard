@@ -136,7 +136,8 @@ export default function CustomersPage() {
                                                         <thead>
                                                             <tr>
                                                                 <th>Tour</th>
-                                                                <th>Date</th>
+                                                                <th>Start</th>
+                                                                <th>End</th>
                                                                 <th>Retail</th>
                                                                 <th>Status</th>
                                                             </tr>
@@ -146,6 +147,7 @@ export default function CustomersPage() {
                                                                 <tr key={t.id}>
                                                                     <td>{t.tourName}</td>
                                                                     <td>{t.date}</td>
+                                                                    <td>{t.endDate || t.date}</td>
                                                                     <td>{fmt(t.retailPrice)}</td>
                                                                     <td><span className={`status-badge status-${t.status}`}>{t.status}</span></td>
                                                                 </tr>

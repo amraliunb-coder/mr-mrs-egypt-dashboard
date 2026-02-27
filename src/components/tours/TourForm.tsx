@@ -14,6 +14,7 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
     const [form, setForm] = useState({
         tourName: tour?.tourName || '',
         date: tour?.date || '',
+        endDate: tour?.endDate || '',
         customerName: tour?.customerName || '',
         customerEmail: tour?.customerEmail || '',
         costPrice: tour?.costPrice?.toString() || '',
@@ -33,6 +34,7 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
         onSubmit({
             tourName: form.tourName,
             date: form.date,
+            endDate: form.endDate || form.date,
             customerName: form.customerName,
             customerEmail: form.customerEmail || undefined,
             costPrice: parseFloat(form.costPrice) || 0,
@@ -51,6 +53,15 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
     const profit = retailPrice - costPrice;
     const margin = retailPrice > 0 ? ((profit / retailPrice) * 100).toFixed(1) : '0.0';
 
+    // Duration calculation
+    let durationDays = 0;
+    if (form.date && form.endDate) {
+        const start = new Date(form.date);
+        const end = new Date(form.endDate);
+        const diff = end.getTime() - start.getTime();
+        durationDays = Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+    }
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -60,14 +71,19 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="modal-body">
+                        <div className="form-group">
+                            <label className="form-label">Tour Name *</label>
+                            <input className="form-input" name="tourName" value={form.tourName} onChange={handleChange} required placeholder="e.g. Pyramids & Sphinx Tour" />
+                        </div>
+
                         <div className="form-grid">
                             <div className="form-group">
-                                <label className="form-label">Tour Name *</label>
-                                <input className="form-input" name="tourName" value={form.tourName} onChange={handleChange} required placeholder="e.g. Pyramids & Sphinx Tour" />
+                                <label className="form-label">Start Date *</label>
+                                <input className="form-input" type="date" name="date" value={form.date} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Date *</label>
-                                <input className="form-input" type="date" name="date" value={form.date} onChange={handleChange} required />
+                                <label className="form-label">End Date</label>
+                                <input className="form-input" type="date" name="endDate" value={form.endDate} onChange={handleChange} placeholder="Optional" />
                             </div>
                         </div>
 
@@ -105,10 +121,10 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label">Status</label>
+                            <label className="form-label">Status Override</label>
                             <select className="form-select" name="status" value={form.status} onChange={handleChange}>
-                                <option value="upcoming">Upcoming</option>
-                                <option value="completed">Completed</option>
+                                <option value="upcoming">Automatic (By Date)</option>
+                                <option value="completed">Force Completed</option>
                                 <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
@@ -120,29 +136,30 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
 
                         {/* Live calculation preview */}
                         <div style={{
-                            background: 'rgba(212, 168, 67, 0.06)',
-                            border: '1px solid rgba(212, 168, 67, 0.15)',
+                            background: 'rgba(212, 175, 55, 0.04)',
+                            border: '1px solid rgba(212, 175, 55, 0.1)',
                             borderRadius: 'var(--radius-md)',
                             padding: '16px',
                         }}>
-                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
-                                Calculated Preview
-                            </div>
-                            <div className="form-grid-3">
+                            <div className="form-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px' }}>
                                 <div>
-                                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Profit</div>
-                                    <div style={{ fontSize: '18px', fontWeight: 700, color: profit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
-                                        ${profit.toFixed(2)}
+                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Profit</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: profit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+                                        ${profit.toLocaleString()}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Margin</div>
-                                    <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--gold-primary)' }}>{margin}%</div>
+                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Margin</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--gold-primary)' }}>{margin}%</div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Cost Remaining</div>
-                                    <div style={{ fontSize: '18px', fontWeight: 700, color: (costPrice - costPaid) > 0 ? 'var(--accent-red)' : 'var(--accent-green)' }}>
-                                        ${Math.max(0, costPrice - costPaid).toFixed(2)}
+                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Duration</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>{durationDays > 0 ? `${durationDays} Days` : '--'}</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Balance</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: (retailPrice - retailPaid) > 0 ? 'var(--accent-red)' : 'var(--accent-green)' }}>
+                                        ${Math.max(0, retailPrice - retailPaid).toLocaleString()}
                                     </div>
                                 </div>
                             </div>

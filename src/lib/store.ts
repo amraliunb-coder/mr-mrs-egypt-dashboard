@@ -18,9 +18,12 @@ export function computeTourFields(tour: Tour): TourWithComputed {
     let effectiveStatus = tour.status;
     if (tour.status !== 'cancelled') {
         const today = format(new Date(), 'yyyy-MM-dd');
-        if (tour.date === today) {
-            effectiveStatus = 'active' as any;
-        } else if (tour.date < today) {
+        const startDate = tour.date;
+        const endDate = tour.endDate || tour.date; // fallback if missing
+
+        if (today >= startDate && today <= endDate) {
+            effectiveStatus = 'arrived';
+        } else if (today > endDate) {
             effectiveStatus = 'completed';
         } else {
             effectiveStatus = 'upcoming';
@@ -58,8 +61,8 @@ export function getTours(): TourWithComputed[] {
 }
 
 function stripComputed(tour: TourWithComputed | Tour): Tour {
-    const { id, tourName, date, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status } = tour;
-    return { id, tourName, date, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status };
+    const { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status } = tour;
+    return { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status };
 }
 
 function saveTours(tours: (Tour | TourWithComputed)[]) {

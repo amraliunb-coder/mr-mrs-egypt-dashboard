@@ -474,7 +474,8 @@ tr.totals-row td {
   border: 1px solid rgba(52, 211, 153, 0.2);
 }
 
-.status-active {
+.status-active,
+.status-arrived {
   background: rgba(212, 175, 55, 0.1);
   color: var(--gold-primary);
   border: 1px solid rgba(212, 175, 55, 0.3);

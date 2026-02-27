@@ -31,7 +31,8 @@ export default function ProfitBreakdown({ tours, summary }: Props) {
                     <thead>
                         <tr>
                             <th>Tour Name</th>
-                            <th>Date</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Customer</th>
                             <th>Cost Price</th>
                             <th>Retail Price</th>
@@ -49,6 +50,7 @@ export default function ProfitBreakdown({ tours, summary }: Props) {
                             <tr key={t.id}>
                                 <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.tourName}</td>
                                 <td>{t.date}</td>
+                                <td>{t.endDate || t.date}</td>
                                 <td>{t.customerName}</td>
                                 <td>{fmt(t.costPrice)}</td>
                                 <td>{fmt(t.retailPrice)}</td>
@@ -64,7 +66,7 @@ export default function ProfitBreakdown({ tours, summary }: Props) {
                             </tr>
                         ))}
                         <tr className="totals-row">
-                            <td colSpan={3}><strong>Grand Totals</strong></td>
+                            <td colSpan={4}><strong>Grand Totals</strong></td>
                             <td>{fmt(summary.totalCosts)}</td>
                             <td>{fmt(summary.totalRevenue)}</td>
                             <td>{fmt(summary.totalCostPaid)}</td>

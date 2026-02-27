@@ -102,6 +102,7 @@ export default function ToursPage() {
                 >
                     <option value="all">All Status</option>
                     <option value="upcoming">Upcoming</option>
+                    <option value="arrived">Arrived</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                 </select>
@@ -130,7 +131,8 @@ export default function ToursPage() {
                             <thead>
                                 <tr>
                                     <th>Tour Name</th>
-                                    <th>Date</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
                                     <th>Customer</th>
                                     <th>Cost</th>
                                     <th>Retail</th>
@@ -145,6 +147,7 @@ export default function ToursPage() {
                                     <tr key={t.id}>
                                         <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.tourName}</td>
                                         <td>{t.date}</td>
+                                        <td>{t.endDate || t.date}</td>
                                         <td>{t.customerName}</td>
                                         <td>{fmt(t.costPrice)}</td>
                                         <td>{fmt(t.retailPrice)}</td>

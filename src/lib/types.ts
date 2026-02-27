@@ -9,7 +9,8 @@ export interface Tour {
     costPaid: number;
     retailPaid: number;
     notes?: string;
-    status: 'upcoming' | 'completed' | 'cancelled' | 'active';
+    status: 'upcoming' | 'completed' | 'cancelled' | 'active' | 'arrived';
+    endDate: string;
 }
 
 export interface TourWithComputed extends Tour {
