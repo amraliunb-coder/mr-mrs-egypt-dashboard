@@ -151,7 +151,15 @@ export default function CustomersPage() {
                                                         <tbody>
                                                             {c.tours.map(t => (
                                                                 <tr key={t.id}>
-                                                                    <td>{t.tourName}</td>
+                                                                    <td>
+                                                                        {t.tourLink ? (
+                                                                            <a href={t.tourLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'underline' }}>
+                                                                                {t.tourName}
+                                                                            </a>
+                                                                        ) : (
+                                                                            t.tourName
+                                                                        )}
+                                                                    </td>
                                                                     <td>{t.date}</td>
                                                                     <td>{t.endDate || t.date}</td>
                                                                     <td>{fmt(t.retailPrice)}</td>

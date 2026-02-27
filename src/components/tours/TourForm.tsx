@@ -23,6 +23,7 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
         retailPaid: tour?.retailPaid?.toString() || '0',
         status: tour?.status || 'upcoming' as Tour['status'],
         notes: tour?.notes || '',
+        tourLink: tour?.tourLink || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -43,6 +44,7 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
             retailPaid: parseFloat(form.retailPaid) || 0,
             status: form.status as Tour['status'],
             notes: form.notes || undefined,
+            tourLink: form.tourLink || undefined,
         });
     };
 
@@ -71,9 +73,15 @@ export default function TourForm({ tour, onSubmit, onClose }: Props) {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="modal-body">
-                        <div className="form-group">
-                            <label className="form-label">Tour Name *</label>
-                            <input className="form-input" name="tourName" value={form.tourName} onChange={handleChange} required placeholder="e.g. Pyramids & Sphinx Tour" />
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label className="form-label">Tour Name *</label>
+                                <input className="form-input" name="tourName" value={form.tourName} onChange={handleChange} required placeholder="e.g. Pyramids & Sphinx Tour" />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Tour Link</label>
+                                <input className="form-input" type="url" name="tourLink" value={form.tourLink} onChange={handleChange} placeholder="Optional tour link URL" />
+                            </div>
                         </div>
 
                         <div className="form-grid">

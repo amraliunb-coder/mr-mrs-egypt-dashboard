@@ -87,8 +87,8 @@ export function getTours(): TourWithComputed[] {
 }
 
 function stripComputed(tour: TourWithComputed | Tour): Tour {
-    const { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status } = tour;
-    return { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, status };
+    const { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, status } = tour;
+    return { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, status };
 }
 
 function saveTours(tours: (Tour | TourWithComputed)[]) {
