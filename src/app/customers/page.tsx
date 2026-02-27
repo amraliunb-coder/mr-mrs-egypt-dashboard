@@ -93,13 +93,15 @@ export default function CustomersPage() {
                                             {countdownText && (
                                                 <div style={{
                                                     display: 'flex', alignItems: 'center', gap: '4px',
-                                                    background: 'rgba(212, 168, 67, 0.15)',
-                                                    color: 'var(--gold-primary)',
+                                                    background: nextTour?.status === 'arrived' ? 'rgba(212, 168, 67, 0.15)' : 'rgba(64, 156, 255, 0.15)',
+                                                    color: nextTour?.status === 'arrived' ? 'var(--gold-primary)' : 'var(--accent-blue)',
+                                                    border: `1px solid ${nextTour?.status === 'arrived' ? 'rgba(212, 168, 67, 0.3)' : 'rgba(64, 156, 255, 0.3)'}`,
                                                     padding: '4px 10px',
                                                     borderRadius: '20px',
                                                     fontSize: '12px',
                                                     fontWeight: 600,
-                                                    whiteSpace: 'nowrap'
+                                                    whiteSpace: 'nowrap',
+                                                    boxShadow: nextTour?.status === 'arrived' ? '0 0 10px rgba(212, 168, 67, 0.2)' : 'none'
                                                 }}>
                                                     <Clock size={12} />
                                                     {countdownText}
