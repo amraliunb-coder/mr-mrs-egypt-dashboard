@@ -20,6 +20,7 @@ interface ParsedRow {
     costPaid: number;
     retailPaid: number;
     status: string;
+    endDate: string;
     notes?: string;
 }
 
@@ -47,6 +48,8 @@ const COLUMN_MAP: Record<string, keyof ParsedRow> = {
     'paid retail': 'retailPaid',
     'paid': 'retailPaid',
     'status': 'status',
+    'end date': 'endDate',
+    'trip end': 'endDate',
     'notes': 'notes',
     'note': 'notes',
 };
@@ -88,6 +91,7 @@ export default function CsvUpload({ onImport, onClose }: Props) {
                             costPaid: mapped.costPaid || 0,
                             retailPaid: mapped.retailPaid || 0,
                             status: mapped.status || 'upcoming',
+                            endDate: mapped.endDate || mapped.date || new Date().toISOString().split('T')[0],
                             notes: mapped.notes,
                         };
                     });
