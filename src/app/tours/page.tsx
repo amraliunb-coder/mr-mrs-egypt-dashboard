@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getTours, addTour, updateTour, deleteTour, importTours, exportToCsv } from '@/lib/store';
+import { getTours, addTour, updateTour, deleteTour, importTours, exportToCsv, resetTours } from '@/lib/store';
 import { Tour, TourWithComputed } from '@/lib/types';
 import TourForm from '@/components/tours/TourForm';
 import CsvUpload from '@/components/tours/CsvUpload';
-import { Plus, Upload, Download, Search, Trash2, Edit, Map } from 'lucide-react';
+import { Plus, Upload, Download, Search, Trash2, Edit, Map, RefreshCw } from 'lucide-react';
 
 export default function ToursPage() {
     const [tours, setTours] = useState<TourWithComputed[]>([]);
@@ -77,6 +76,13 @@ export default function ToursPage() {
                     </button>
                     <button className="btn btn-secondary" onClick={handleExport}>
                         <Download size={16} /> Export
+                    </button>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => { if (confirm('Sync will replace all current data with the latest table data. Proceed?')) resetTours(); }}
+                        style={{ borderColor: 'var(--gold-primary)', color: 'var(--gold-primary)' }}
+                    >
+                        <RefreshCw size={16} /> Sync Table Data
                     </button>
                     <button className="btn btn-primary" onClick={() => setShowForm(true)}>
                         <Plus size={16} /> Add Tour

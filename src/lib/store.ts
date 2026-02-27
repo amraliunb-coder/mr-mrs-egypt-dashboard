@@ -34,27 +34,46 @@ export function computeTourFields(tour: Tour): TourWithComputed {
 }
 
 
-// Auto-seed on first load
-function ensureSeeded() {
+// --- CRUD ---
+export function resetTours() {
     if (typeof window === 'undefined') return;
-    if (localStorage.getItem(SEEDED_KEY)) return;
+    const seeded: Tour[] = SEED_TOURS.map(t => ({ ...t, id: uuidv4() }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+    localStorage.setItem(SEEDED_KEY, 'true');
+    window.location.reload(); // Force reload to refresh all views
+}
+
+export function getTours(): TourWithComputed[] {
+    if (typeof window === 'undefined') return [];
+
+    // Auto-migrate if SEEDED_KEY is set but we might have old data without endDates
     const existing = localStorage.getItem(STORAGE_KEY);
     if (!existing || existing === '[]') {
         const seeded: Tour[] = SEED_TOURS.map(t => ({ ...t, id: uuidv4() }));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+        localStorage.setItem(SEEDED_KEY, 'true');
     }
-    localStorage.setItem(SEEDED_KEY, 'true');
-}
 
-// --- CRUD ---
-export function getTours(): TourWithComputed[] {
-    if (typeof window === 'undefined') return [];
-    ensureSeeded();
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     try {
         const tours: Tour[] = JSON.parse(raw);
-        return tours.map(computeTourFields).sort((a, b) => b.date.localeCompare(a.date));
+
+        // Minor migration: Ensure all tours have an endDate (default to current date if missing)
+        let needsSave = false;
+        const migrated = tours.map(t => {
+            if (!t.endDate) {
+                t.endDate = t.date;
+                needsSave = true;
+            }
+            return t;
+        });
+
+        if (needsSave) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        }
+
+        return migrated.map(computeTourFields).sort((a, b) => b.date.localeCompare(a.date));
     } catch {
         return [];
     }
