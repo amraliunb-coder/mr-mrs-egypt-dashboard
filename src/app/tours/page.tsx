@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { getTours, addTour, updateTour, deleteTour, importTours, exportToCsv, resetTours } from '@/lib/store';
 import { Tour, TourWithComputed } from '@/lib/types';
