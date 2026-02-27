@@ -61,17 +61,21 @@ export default function CustomersPage() {
                             style={{ cursor: 'pointer' }}
                         >
                             {(() => {
-                                const upcomingTours = c.tours.filter(t => t.status === 'upcoming').sort((a, b) => a.date.localeCompare(b.date));
+                                const upcomingTours = c.tours.filter(t => t.status === 'upcoming' || t.status === 'arrived').sort((a, b) => a.date.localeCompare(b.date));
                                 const nextTour = upcomingTours.length > 0 ? upcomingTours[0] : null;
                                 let countdownText = '';
                                 if (nextTour) {
-                                    const today = startOfDay(new Date());
-                                    const tourDate = parseISO(nextTour.date);
-                                    const days = differenceInDays(tourDate, today);
-                                    if (days === 0) countdownText = 'Arriving today!';
-                                    else if (days === 1) countdownText = 'Arriving tomorrow';
-                                    else if (days > 1) countdownText = `Arriving in ${days} days`;
-                                    else countdownText = 'Arrived';
+                                    if (nextTour.status === 'arrived') {
+                                        countdownText = 'ON TOUR (ARRIVED)';
+                                    } else {
+                                        const today = startOfDay(new Date());
+                                        const tourDate = parseISO(nextTour.date);
+                                        const days = differenceInDays(tourDate, today);
+                                        if (days === 0) countdownText = 'Arriving today!';
+                                        else if (days === 1) countdownText = 'Arriving tomorrow';
+                                        else if (days > 1) countdownText = `Arriving in ${days} days`;
+                                        else countdownText = 'Arrived';
+                                    }
                                 }
 
                                 return (
