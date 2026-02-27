@@ -59,12 +59,19 @@ export function getTours(): TourWithComputed[] {
     try {
         const tours: Tour[] = JSON.parse(raw);
 
-        // Minor migration: Ensure all tours have an endDate (default to current date if missing)
+        // Minor migration: Ensure all tours have an endDate and sync with SEED_TOURS if possible
         let needsSave = false;
         const migrated = tours.map(t => {
-            if (!t.endDate) {
-                t.endDate = t.date;
-                needsSave = true;
+            if (!t.endDate || t.endDate === t.date) {
+                // Safely try to find an exact match in SEED_TOURS to inherit correct end dates
+                const seedMatch = SEED_TOURS.find(s => s.tourName === t.tourName && s.customerName === t.customerName && s.date === t.date);
+                if (seedMatch && seedMatch.endDate && seedMatch.endDate !== t.endDate) {
+                    t.endDate = seedMatch.endDate;
+                    needsSave = true;
+                } else if (!t.endDate) {
+                    t.endDate = t.date;
+                    needsSave = true;
+                }
             }
             return t;
         });
