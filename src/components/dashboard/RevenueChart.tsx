@@ -8,6 +8,7 @@ import {
     LinearScale,
     BarElement,
     LineElement,
+    LineController,
     PointElement,
     Title,
     Tooltip,
@@ -15,7 +16,7 @@ import {
     Filler,
 } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, LineController, PointElement, Title, Tooltip, Legend, Filler);
 
 interface Props {
     data: MonthlyData[];
