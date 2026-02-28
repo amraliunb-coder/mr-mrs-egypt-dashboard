@@ -197,16 +197,17 @@ export default function ToursPage() {
                                         <td><span className={`status-badge status-${t.status}`}>{t.status}</span></td>
                                         <td>
                                             <div className="btn-group">
-                                                {isAdmin && (
-                                                    <button
-                                                        className="btn btn-ghost btn-sm"
-                                                        title={t.isHidden ? 'Show tour for users' : 'Hide tour from users'}
-                                                        onClick={() => { toggleTourVisibility(t.id); refresh(); }}
-                                                        style={{ color: t.isHidden ? 'var(--text-muted)' : 'var(--gold-primary)' }}
-                                                    >
-                                                        {t.isHidden ? <EyeOff size={14} /> : <Eye size={14} />}
-                                                    </button>
-                                                )}
+                                                <button
+                                                    className="btn btn-ghost btn-sm"
+                                                    title={t.isHidden ? 'Show tour for users' : 'Hide tour from users'}
+                                                    onClick={() => { toggleTourVisibility(t.id); refresh(); }}
+                                                    style={{
+                                                        color: t.isHidden ? 'var(--text-muted)' : 'var(--gold-primary)',
+                                                        display: isAdmin ? 'inline-flex' : 'none'
+                                                    }}
+                                                >
+                                                    {t.isHidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                </button>
                                                 <button className="btn btn-ghost btn-sm" onClick={() => setEditingTour(t)}>
                                                     <Edit size={14} />
                                                 </button>
