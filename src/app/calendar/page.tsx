@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTours } from '@/lib/store';
+import { getTours, getVisibleTours } from '@/lib/store';
 import { TourWithComputed } from '@/lib/types';
 import {
     startOfMonth, endOfMonth, startOfWeek, endOfWeek,
@@ -9,13 +9,19 @@ import {
     isSameMonth, isToday, isSameDay, parseISO
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
 
 export default function CalendarPage() {
     const [tours, setTours] = useState<TourWithComputed[]>([]);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-    useEffect(() => { setTours(getTours()); }, []);
+    const { user, isLoading } = useAuth();
+    const isAdmin = !isLoading && user?.role === 'admin';
+
+    useEffect(() => {
+        setTours(isAdmin ? getTours() : getVisibleTours());
+    }, [isAdmin]);
 
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
