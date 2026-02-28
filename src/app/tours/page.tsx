@@ -17,12 +17,12 @@ export default function ToursPage() {
     const [showForm, setShowForm] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [editingTour, setEditingTour] = useState<TourWithComputed | null>(null);
-    const { user } = useAuth();
-    const isAdmin = user?.role === 'admin';
+    const { user, isLoading } = useAuth();
+    const isAdmin = !isLoading && user?.role === 'admin';
 
     const refresh = () => setTours(getTours());
 
-    useEffect(() => { refresh(); }, []);
+    useEffect(() => { refresh(); }, [isAdmin]);
 
     const availableMonths = Array.from(new Set(tours.map(t => {
         try { return format(parseISO(t.date), 'yyyy-MM'); } catch { return ''; }
