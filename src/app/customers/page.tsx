@@ -1,20 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTours, getCustomers } from '@/lib/store';
+import { getTours, getCustomers, getVisibleTours } from '@/lib/store';
 import { CustomerSummary } from '@/lib/types';
 import { differenceInDays, parseISO, startOfDay } from 'date-fns';
 import { Users, Search, Mail, Calendar, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
 
 export default function CustomersPage() {
     const [customers, setCustomers] = useState<CustomerSummary[]>([]);
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState<string | null>(null);
 
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
+
     useEffect(() => {
-        const tours = getTours();
+        const tours = isAdmin ? getTours() : getVisibleTours();
         setCustomers(getCustomers(tours));
-    }, []);
+    }, [isAdmin]);
 
     const filtered = customers.filter(c =>
         c.name.toLowerCase().includes(search.toLowerCase()) ||

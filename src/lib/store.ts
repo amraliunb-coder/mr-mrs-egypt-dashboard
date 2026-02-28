@@ -87,8 +87,8 @@ export function getTours(): TourWithComputed[] {
 }
 
 function stripComputed(tour: TourWithComputed | Tour): Tour {
-    const { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, status } = tour;
-    return { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, status };
+    const { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, isHidden, status } = tour;
+    return { id, tourName, date, endDate, customerName, customerEmail, costPrice, retailPrice, costPaid, retailPaid, notes, tourLink, isHidden, status };
 }
 
 function saveTours(tours: (Tour | TourWithComputed)[]) {
@@ -118,6 +118,20 @@ export function deleteTour(id: string): boolean {
     if (filtered.length === tours.length) return false;
     saveTours(filtered);
     return true;
+}
+
+export function toggleTourVisibility(id: string): boolean {
+    const tours = getTours();
+    const idx = tours.findIndex(t => t.id === id);
+    if (idx === -1) return false;
+    const updated = { ...tours[idx], isHidden: !tours[idx].isHidden };
+    tours[idx] = computeTourFields(updated);
+    saveTours(tours);
+    return true;
+}
+
+export function getVisibleTours(): TourWithComputed[] {
+    return getTours().filter(t => !t.isHidden);
 }
 
 export function importTours(newTours: Omit<Tour, 'id'>[]): number {

@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTours, addTour, updateTour, deleteTour, importTours, exportToCsv, resetTours } from '@/lib/store';
+import { getTours, addTour, updateTour, deleteTour, importTours, exportToCsv, resetTours, toggleTourVisibility } from '@/lib/store';
 import { Tour, TourWithComputed } from '@/lib/types';
 import TourForm from '@/components/tours/TourForm';
 import CsvUpload from '@/components/tours/CsvUpload';
-import { Plus, Upload, Download, Search, Trash2, Edit, Map, RefreshCw } from 'lucide-react';
+import { Plus, Upload, Download, Search, Trash2, Edit, Map, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import { differenceInDays, parseISO, format } from 'date-fns';
+import { useAuth } from '@/lib/auth';
 
 export default function ToursPage() {
     const [tours, setTours] = useState<TourWithComputed[]>([]);
@@ -16,6 +17,8 @@ export default function ToursPage() {
     const [showForm, setShowForm] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [editingTour, setEditingTour] = useState<TourWithComputed | null>(null);
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
 
     const refresh = () => setTours(getTours());
 
@@ -181,8 +184,8 @@ export default function ToursPage() {
                             </thead>
                             <tbody>
                                 {filtered.map(t => (
-                                    <tr key={t.id}>
-                                        <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.tourName}</td>
+                                    <tr key={t.id} style={{ opacity: t.isHidden ? 0.45 : 1, transition: 'opacity 0.2s' }}>
+                                        <td style={{ fontWeight: 500, color: 'var(--text-primary)', textDecoration: t.isHidden ? 'line-through' : 'none' }}>{t.tourName}</td>
                                         <td>{t.date}</td>
                                         <td>{t.endDate || t.date}</td>
                                         <td>{differenceInDays(parseISO(t.endDate || t.date), parseISO(t.date)) + 1} Days</td>
@@ -194,6 +197,16 @@ export default function ToursPage() {
                                         <td><span className={`status-badge status-${t.status}`}>{t.status}</span></td>
                                         <td>
                                             <div className="btn-group">
+                                                {isAdmin && (
+                                                    <button
+                                                        className="btn btn-ghost btn-sm"
+                                                        title={t.isHidden ? 'Show tour for users' : 'Hide tour from users'}
+                                                        onClick={() => { toggleTourVisibility(t.id); refresh(); }}
+                                                        style={{ color: t.isHidden ? 'var(--text-muted)' : 'var(--gold-primary)' }}
+                                                    >
+                                                        {t.isHidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                    </button>
+                                                )}
                                                 <button className="btn btn-ghost btn-sm" onClick={() => setEditingTour(t)}>
                                                     <Edit size={14} />
                                                 </button>

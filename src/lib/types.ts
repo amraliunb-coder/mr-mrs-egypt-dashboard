@@ -10,6 +10,7 @@ export interface Tour {
     retailPaid: number;
     notes?: string;
     tourLink?: string;
+    isHidden?: boolean;
     status: 'upcoming' | 'completed' | 'cancelled' | 'active' | 'arrived';
     endDate: string;
 }

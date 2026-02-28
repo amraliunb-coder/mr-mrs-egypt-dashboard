@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { getTours, getDashboardSummary, getMonthlyData } from '@/lib/store';
+import { getTours, getDashboardSummary, getMonthlyData, getVisibleTours } from '@/lib/store';
 import { TourWithComputed, DashboardSummary, MonthlyData } from '@/lib/types';
 import SummaryCards from '@/components/dashboard/SummaryCards';
 import RevenueChart from '@/components/dashboard/RevenueChart';
 import ProfitBreakdown from '@/components/dashboard/ProfitBreakdown';
+import { useAuth } from '@/lib/auth';
 
 export default function DashboardPage() {
   const [tours, setTours] = useState<TourWithComputed[]>([]);
@@ -17,21 +18,24 @@ export default function DashboardPage() {
   });
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+
   useEffect(() => {
-    const data = getTours();
+    const data = isAdmin ? getTours() : getVisibleTours();
     setTours(data);
     setSummary(getDashboardSummary(data));
     setMonthlyData(getMonthlyData(data));
 
     const handleStorage = () => {
-      const updated = getTours();
+      const updated = isAdmin ? getTours() : getVisibleTours();
       setTours(updated);
       setSummary(getDashboardSummary(updated));
       setMonthlyData(getMonthlyData(updated));
     };
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, []);
+  }, [isAdmin]);
 
   return (
     <>
